@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NOVA CART</title>
+<style>
+:root{--bg:#f4f6f3;--cd:#fff;--tx:#18211e;--mu:#62706b;--pr:#0b6b5e;--pl:#d8f0ea;--ac:#e07b00;--bd:#dde3df;--bad:#b83a0c;--ok:#13763a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#101715;--cd:#18221f;--tx:#e8efec;--mu:#9aaaa4;--pr:#4fd1b8;--pl:#173a34;--ac:#ffa73d;--bd:#2a3733;--bad:#ff8a5c;--ok:#5fd78a}}
+:root[data-theme=dark]{--bg:#101715;--cd:#18221f;--tx:#e8efec;--mu:#9aaaa4;--pr:#4fd1b8;--pl:#173a34;--ac:#ffa73d;--bd:#2a3733;--bad:#ff8a5c;--ok:#5fd78a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Trebuchet MS","Segoe UI",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:12px 14px 80px}
+h1{font:800 22px Georgia,serif;margin:0;color:var(--pr);letter-spacing:-.5px}h2{font:700 17px Georgia,serif;margin:18px 0 8px}h3{margin:0;font-size:15px}
+.top{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+select,input,button{font:inherit;color:var(--tx)}select,input{background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:7px 9px;max-width:100%}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--cd);border-radius:8px;padding:7px 12px}
+button.p{background:var(--pr);color:var(--bg);border-color:var(--pr);font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:10px 0}
+nav button{white-space:nowrap;border-radius:20px}nav button.on{background:var(--pr);color:var(--bg);border-color:var(--pr)}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:11px 13px;margin:8px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.mu{color:var(--mu);font-size:13px}
+.tag{font-size:12px;padding:2px 8px;border-radius:12px;background:var(--pl);color:var(--pr)}.bad{color:var(--bad)}.ok{color:var(--ok)}
+.sc{border-left:4px solid var(--bd);cursor:pointer}.sc.on{border-left-color:var(--pr);background:var(--pl)}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pr)}
+.q{display:inline-flex;gap:6px;align-items:center}.tot{font-weight:800;font-size:17px}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px 4px;text-align:left;vertical-align:top}
+#t{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 14px;border-radius:20px;max-width:90%;z-index:9}
+.st{display:flex;gap:8px;align-items:center;font-size:13px;margin:3px 0}.st b{width:12px;height:12px;border-radius:50%;background:var(--bd);flex:none}.st.d b{background:var(--pr)}.st.d{font-weight:700}
+</style></head><body><main id="app"></main><div id="t" hidden></div>
+<script>
+const AR=['Anna Nagar, Chennai (TN)','MVP Colony, Visakhapatnam (AP)','Banjara Hills, Hyderabad (TG)'];
+const ST=[
+{n:'Sri Murugan Grocers',t:'Grocery',a:0,km:.8,pr:8,r:4.6,o:1,it:[['Aashirvaad Atta 5kg',248,265,14],['Toor Dal 1kg',152,170,0],['Amul Milk 1L',68,68,9],['Sunflower Oil 1L',138,155,2]]},
+{n:'Anand Pharmacy',t:'Pharmacy',a:0,km:1.4,pr:6,r:4.7,o:1,it:[['Paracetamol 15s',32,35,20],['ORS Sachets x5',55,60,6],['Vitamin C 20s',89,110,0],['Digital Thermometer',199,260,3]]},
+{n:'Fresh Crust Bakery',t:'Bakery',a:1,km:1.1,pr:10,r:4.5,o:1,it:[['Whole Wheat Bread',45,50,8],['Choco Muffin x2',90,100,5],['Plum Cake 400g',220,260,3],['Butter Croissant',60,70,0]]},
+{n:'Paper Tree Stationers',t:'Stationery',a:1,km:2.3,pr:6,r:4.4,o:1,it:[['A4 Notebooks x3',150,180,12],['Gel Pens x10',80,100,25],['Sketch Set',175,210,0],['Geometry Box',95,110,7]]},
+{n:'Lakshmi Kirana',t:'Grocery',a:2,km:.6,pr:7,r:4.6,o:1,it:[['Basmati Rice 5kg',520,580,6],['Sugar 1kg',46,50,18],['Tata Salt 1kg',28,28,1],['Masala Chai 250g',125,140,10]]},
+{n:'CityCare Pharmacy',t:'Pharmacy',a:2,km:3.8,pr:6,r:4.3,o:0,it:[['Cough Syrup',95,105,8],['Bandage Roll',30,30,15],['Hand Sanitizer',60,75,10],['Glucose Powder',70,80,9]]},
+{n:'Bake & Co',t:'Bakery',a:0,km:1.9,pr:10,r:4.5,o:1,it:[['Milk Bread',40,45,10],['Veg Puff x2',50,60,6],['Fruit Cake 350g',190,220,2],['Cookies Box',120,140,0]]},
+{n:'Kumar Stationery Mart',t:'Stationery',a:0,km:2.6,pr:6,r:4.4,o:1,it:[['Ruled Notebooks x5',210,250,15],['Highlighters x4',90,110,8],['Glue Sticks x3',45,50,0],['Scientific Calculator',650,799,3]]},
+{n:'Vizag Daily Mart',t:'Grocery',a:1,km:.9,pr:8,r:4.5,o:1,it:[['Idli Rice 5kg',310,340,9],['Moong Dal 1kg',140,155,12],['Curd 500g',35,38,0],['Groundnut Oil 1L',165,180,2]]},
+{n:'Sagar Medicals',t:'Pharmacy',a:1,km:1.7,pr:6,r:4.6,o:1,it:[['Antacid Tablets 10s',28,30,18],['Cotton Roll',40,45,7],['BP Monitor',1450,1800,2],['Pain Relief Spray',150,175,0]]},
+{n:'Charminar Bakery',t:'Bakery',a:2,km:1.5,pr:9,r:4.7,o:1,it:[['Osmania Biscuits 400g',110,120,14],['Fruit Buns x4',60,70,5],['Chocolate Cake 500g',320,380,3],['Rusk Pack',55,60,0]]},
+{n:'Student Corner',t:'Stationery',a:2,km:2.1,pr:6,r:4.3,o:1,it:[['Spiral Notebooks x2',130,160,11],['Ball Pens x20',100,120,20],['Colour Pencils 24',140,170,0],['Art Paper Pack',85,95,6]]}];
+const CP={
+FIRST50:{d:'50% off, up to ₹100 · min ₹149 · first order only',min:149,first:1,f:s=>Math.min(100,s*.5)},
+REFER75:{d:'₹75 off · min ₹199 · for friends who joined by referral (first order)',min:199,first:1,f:()=>75},
+RAHUL15:{d:'Creator code: 15% off, up to ₹60 · min ₹249',min:249,f:s=>Math.min(60,s*.15)},
+DIWALI20:{d:'Festival: 20% off, up to ₹120 · min ₹399',min:399,from:'25 Oct',f:s=>Math.min(120,s*.2)},
+FREEDEL:{d:'Free delivery campaign · min ₹199 · till 31 Oct',min:199,free:1,f:()=>0}};
+const S={tab:'shop',area:0,cat:'All',sid:0,cart:null,coupon:'',orders:[],coins:120,first:true,n:1,msg:'',ds:0};
+const R=n=>'₹'+Math.round(n);
+function toast(m){const t=document.getElementById('t');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2800)}
+function chk(c,sub){const k=CP[c];if(k.from)return 'Starts '+k.from+' — not active yet';if(k.first&&!S.first)return 'Only for a first order — you have already ordered';if(sub<k.min)return 'Add '+R(k.min-sub)+' more to use '+c;return ''}
+function calc(){const c=S.cart;if(!c)return null;const x=ST[c.sid];let sub=0,mrp=0,n=0;for(const i in c.q){sub+=x.it[i][1]*c.q[i];mrp+=x.it[i][2]*c.q[i];n+=c.q[i]}
+let ship=x.km<=3?20:20+Math.ceil((x.km-3)*6),d=0,err='',why='';const k=S.coupon&&CP[S.coupon];
+if(k){err=chk(S.coupon,sub);if(!err){d=Math.round(k.f(sub));if(k.free)why='Free delivery campaign'}}
+if(!why&&(S.n+1)%3==0)why='Loyalty reward: every 3rd order ships free';if(!why&&sub>=299)why='Free delivery above ₹299';
+const fee=why?0:ship;return{x,sub,mrp,n,d,fee,ship,why,err,tot:sub-d+fee,sv:mrp-sub+d+(why?ship:0),eta:x.pr+Math.ceil(x.km*4)+5+(x.busy?10:0)}}
+function add(s,i){const x=ST[s],it=x.it[i];if(!x.o)return toast(x.n+' is closed — pick an open store');let c=S.cart;if(c&&c.sid!=s){toast('Basket moved to '+x.n+' (one store per order keeps delivery fast)');c=S.cart=null}
+if(!c)c=S.cart={sid:s,q:{}};if((c.q[i]||0)>=it[3])return toast('Only '+it[3]+' in stock at '+x.n);c.q[i]=(c.q[i]||0)+1;render()}
+function dec(i){const c=S.cart;if(--c.q[i]<=0)delete c.q[i];if(!Object.keys(c.q).length)S.cart=null;render()}
+function applyC(v){v=(v||'').trim().toUpperCase();if(!CP[v])return toast('Code not found. Check the spelling or browse Offers');S.coupon=v;const p=calc();render();toast(p&&p.err?p.err:p?v+' applied':v+' saved — add items to use it')}
+function best(){const p=calc();if(!p)return toast('Add items first');let b='',m=0;for(const c in CP){if(chk(c,p.sub))continue;const v=CP[c].free?p.ship:CP[c].f(p.sub);if(v>m){m=v;b=c}}b?applyC(b):toast('No offer is eligible for this basket yet')}
+function place(){const p=calc();if(!p)return;if(p.err)S.coupon='';const c=S.cart,items=[];for(const i in c.q){p.x.it[i][3]-=c.q[i];items.push(p.x.it[i][0]+' x'+c.q[i])}
+const pt=['Ravi K.','Imran S.','Divya M.'][S.orders.length%3];S.orders.unshift({id:'NC'+(1001+S.orders.length),sid:c.sid,items,tot:p.tot,promise:p.eta,eta:p.eta,sec:0,note:'',pt});S.first=false;S.n++;S.cart=null;S.coupon='';S.tab='track';render();toast('Order placed. Price locked at '+R(p.tot))}
+function reject(id){const o=S.orders.find(o=>o.id==id),alt=ST.find((s,i)=>s.a==ST[o.sid].a&&i!=o.sid);o.eta+=4;o.sid=ST.indexOf(alt);o.note='Original store could not fulfil. Auto-rerouted to '+alt.n+' at the same price. ETA +4 min.';render()}
+function stk(s,i,d){ST[s].it[i][3]=Math.max(0,ST[s].it[i][3]+d);render()}
+const SG=['Order placed','Store confirmed','Packed','Partner picked up','On the way','Delivered'];
+function stg(o){const p=ST[o.sid].pr,T=[0,2,p,p+2,p+3,o.eta];let g=0;T.forEach((t,i)=>{if(o.sec>=t)g=i});return g}
+setInterval(()=>{let c=0;S.orders.forEach(o=>{if(o.done)return;c=1;if(++o.sec>=o.eta){o.done=1;const g=Math.round(o.tot*.02);S.coins+=g;o.note+=' Delivered. +'+g+' Nova Coins earned.';if(o.eta>o.promise){S.coins+=25;o.note+=' Late vs promise: ₹25 credit added automatically.'}}});if(c&&(S.tab=='track'||S.tab=='store'))render()},1000);
+function stBadge(x){return !x.o?'<span class="tag bad">Closed · opens 9 AM</span>':x.busy?'<span class="tag">Busy · +10 min</span>':'<span class="tag">Open</span>'}
+function shop(){const ids=ST.map((s,i)=>i).filter(i=>ST[i].a==S.area&&(S.cat=='All'||ST[i].t==S.cat)).sort((a,b)=>ST[a].km-ST[b].km);
+if(!ids.includes(S.sid))S.sid=ids[0]??-1;const types=['All','Grocery','Pharmacy','Bakery','Stationery'];
+let h=`<div class="c row"><div><h3>Nova Club · ${S.coins} coins</h3><div class="mu">Earn 2% back on every delivered order. Order #${S.n+1} ${(S.n+1)%3==0?'ships free':'is '+(3-(S.n+1)%3)+' away from a free-delivery reward'}.</div></div></div>
+<div class="row" style="flex-wrap:wrap"><select aria-label="Area" onchange="S.area=+this.value;S.cat='All';render()">${AR.map((a,i)=>`<option value="${i}" ${i==S.area?'selected':''}>${a}</option>`).join('')}</select><span>${types.map(t=>`<button class="${S.cat==t?'p':''}" onclick="S.cat='${t}';render()">${t}</button>`).join(' ')}</span></div>
+<h2>Stores near you (nearest first)</h2>`;
+h+=ids.map(i=>{const x=ST[i];return `<div class="c sc ${i==S.sid?'on':''}" onclick="S.sid=${i};render()"><div class="row"><h3>${x.n}</h3>${stBadge(x)}</div><div class="mu">${x.t} · ${x.km} km · ★${x.r} · ready in ~${x.pr} min</div></div>`}).join('');
+if(S.sid>=0){const x=ST[S.sid];h+=`<h2>${x.n}: live stock</h2>`+x.it.map((it,i)=>{const q=S.cart&&S.cart.sid==S.sid&&S.cart.q[i]||0,off=it[2]>it[1]?`<span class="ok">Save ${R(it[2]-it[1])} (${Math.round(100-it[1]/it[2]*100)}% off MRP ${R(it[2])})</span>`:'';
+return `<div class="c row"><div><h3>${it[0]}</h3><div>${R(it[1])} <span class="mu">${off}</span></div><div class="${it[3]==0?'bad':it[3]<=3?'bad':'mu'}">${it[3]==0?'Out of stock — we hide it at checkout so it can\'t cancel your order':it[3]<=3?'Only '+it[3]+' left':'In stock ('+it[3]+')'}</div></div>${it[3]==0?'':q?`<span class="q"><button onclick="dec(${i})" aria-label="Remove one">−</button><b>${q}</b><button class="p" onclick="add(${S.sid},${i})" aria-label="Add one">+</button></span>`:`<button class="p" onclick="add(${S.sid},${i})">Add</button>`}</div>`}).join('')}
+if(S.sid==0&&!S.cart)h+=`<h2>Order again</h2><div class="c row"><div><h3>Your usual: Atta + Toor Dal + Milk</h3><div class="mu">Toor Dal is out of stock today. We add what is available.</div></div><button onclick="[0,2].forEach(i=>add(0,i));toast('Added available items. Toor Dal skipped (out of stock)')">Reorder</button></div>`;
+return h+basket()}
+function basket(){const p=calc();if(!p)return '<h2>Basket</h2><div class="c mu">Your basket is empty. Pick items from an open store.</div>';
+return `<h2>Basket · ${p.x.n}</h2><div class="c"><div class="row"><span>Items (${p.n})</span><span>${R(p.sub)}</span></div>
+${p.d?`<div class="row ok"><span>Coupon ${S.coupon}</span><span>−${R(p.d)}</span></div>`:''}
+<div class="row"><span>Delivery (${p.x.km} km)</span><span>${p.fee?R(p.fee):'<b class="ok">FREE</b>'}</span></div>
+${p.why?`<div class="mu">${p.why}</div>`:`<div class="mu">Free above ₹299. Add ${R(299-p.sub)} more.</div>`}
+<div class="row"><span>Platform &amp; packing fee</span><span>₹0</span></div><div class="row tot"><span>You pay</span><span>${R(p.tot)}</span></div>
+<div class="ok">You save ${R(p.sv)} in total</div><div class="mu">Promise: delivered in ${p.eta} min. Late? You get ₹25 back automatically.</div>
+<div class="row" style="margin-top:8px"><input id="cc" placeholder="Coupon code" value="${S.coupon}"><button onclick="applyC(document.getElementById('cc').value)">Apply</button><button onclick="best()">Best offer</button></div>
+${p.err?`<div class="bad">${p.err}</div>`:''}<button class="p" style="width:100%;margin-top:10px" onclick="place()" ${p.x.o?'':'disabled'}>Place order · ${R(p.tot)}</button></div>`}
+function offers(){return `<h2>Offers with exact rules</h2>`+Object.entries(CP).map(([c,k])=>`<div class="c row"><div><h3>${c}</h3><div class="mu">${k.d}${k.from?'. <b>Starts '+k.from+'</b>':''}</div></div><button onclick="S.coupon='${c}';S.tab='shop';render();toast('${c} saved to basket')">Use</button></div>`).join('')+
+`<div class="c"><h3>Refer a friend: give ₹75, get ₹75</h3><div class="mu">Your code <b>NOVA-ARUN</b>. Both rewards are credited only after the friend's first order is delivered, so fake sign-ups cost us nothing. Cap: 10 referrals per month.</div><button onclick="toast('Code NOVA-ARUN copied')" style="margin-top:6px">Copy code</button></div>
+<div class="c"><h3>Creator and social campaigns</h3><div class="mu">Each creator gets a unique code (like RAHUL15). Spend is tracked per code: orders, repeat rate in 30 days, cost per repeat customer. Codes that bring one-time buyers are paused.</div></div>`}
+function track(){if(!S.orders.length)return '<h2>Track order</h2><div class="c mu">No active orders. Place one from Shop to see live tracking.</div>';
+return '<h2>Live tracking</h2>'+S.orders.map(o=>{const g=stg(o),x=ST[o.sid],left=Math.max(0,o.eta-o.sec);return `<div class="c"><div class="row"><h3>${o.id} · ${x.n}</h3><b>${R(o.tot)}</b></div><div class="mu">${o.items.join(', ')}</div>
+<div class="bar" style="margin:8px 0"><i style="width:${Math.min(100,o.sec/o.eta*100)}%"></i></div>${SG.map((s,i)=>`<div class="st ${i<=g?'d':''}"><b></b>${s}</div>`).join('')}
+<div>${o.done?'<b class="ok">Delivered</b>':'Arriving in <b>'+left+' min</b> · partner '+o.pt+' (backup partner on standby)'}</div>${o.note?`<div class="mu">${o.note}</div>`:''}<div class="mu">Demo clock: 1 second = 1 minute.</div></div>`}).join('')}
+function store(){const x=ST[S.ds],h=`<h2>Partner store dashboard</h2><select onchange="S.ds=+this.value;render()">${ST.map((s,i)=>`<option value="${i}" ${i==S.ds?'selected':''}>${s.n}</option>`).join('')}</select>
+<div class="c row"><div><h3>${x.n}</h3><div class="mu">Acceptance 96% · Avg prep ${x.pr} min · Cancel rate 2.1% (target under 2%)</div></div><button onclick="ST[S.ds].busy=!ST[S.ds].busy;render()">${x.busy?'Resume orders':'Busy mode'}</button></div>
+<h3 style="margin-top:12px">Update stock (customers see this instantly)</h3>`+x.it.map((it,i)=>`<div class="c row"><span>${it[0]}</span><span class="q"><button onclick="stk(S.ds,${i},-1)">−</button><b>${it[3]}</b><button onclick="stk(S.ds,${i},1)">+</button></span></div>`).join('');
+const os=S.orders.filter(o=>o.sid==S.ds);return h+'<h3 style="margin-top:12px">Incoming orders</h3>'+(os.length?os.map(o=>`<div class="c row"><div><b>${o.id}</b> · ${o.items.join(', ')}<div class="mu">${o.done?'Delivered':'Pack within '+ST[o.sid].pr+' min'}</div></div>${o.done||o.sec>3?'':`<button onclick="reject('${o.id}')">Can't fulfil</button>`}</div>`).join(''):'<div class="c mu">No orders yet. Place one as a customer to see it here.</div>')}
+function plan(){const rows=[['Item out of stock after order','Stock shown live; store updates qty in one tap; stock is reserved at checkout; zero-stock items cannot be added','Under 1.0%'],['Store rejects order','Reject only within 3 min; auto-reroutes to next nearest store with stock at same price; rejection rate over 5% lowers store ranking','Under 1.5%'],['Delivery partner unavailable','Partner pre-assigned at packing; backup on standby; stores in busy mode add +10 min to ETA before the order is taken','Under 1.0%'],['Delivery delay','ETA from prep time plus distance; ₹25 auto-credit if late; no manual claims','On-time over 92%']];
+return `<h2>Why cancellations drop</h2><div class="c" style="overflow-x:auto"><table><tr><th>Cause</th><th>Fix built into this site</th><th>Target</th></tr>${rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')}</table></div>
+<h2>Repeat purchase engine</h2><div class="c"><div class="mu">Nova Coins (2% back) · every 3rd order ships free · one-tap reorder that skips out-of-stock items · weekly essentials list from the store you use most · festival coupons timed 7 days before the festival.</div></div>
+<h2>Price and growth guardrails</h2><div class="c"><div class="mu">Delivery ₹20 within 3 km, ₹6 per extra km, free above ₹299. No platform fee. First-order discount capped at ₹100, referral paid only after delivery, free-delivery campaigns need a ₹199 minimum. Track CAC and 30-day repeat rate per channel (referral, creators, social ads). Scale only channels where repeat rate beats the average.</div></div>
+<div class="c"><h3>North-star metrics</h3><div class="mu">30-day repeat rate · cancellation rate · on-time % · tracking ETA error (minutes) · stock accuracy % · store earnings per order.</div></div>`}
+function render(){const T={shop:'Shop',offers:'Offers',track:'Track',store:'Store',plan:'Plan'};
+document.getElementById('app').innerHTML=`<div class="top"><h1>NOVA CART</h1><span class="mu">620 local stores · 3 states</span></div><nav>${Object.entries(T).map(([k,v])=>`<button class="${S.tab==k?'on':''}" onclick="S.tab='${k}';render()">${v}${k=='track'&&S.orders.some(o=>!o.done)?' •':''}</button>`).join('')}</nav>`+({shop,offers,track,store,plan}[S.tab])()}
+render();
+</script></body></html>
